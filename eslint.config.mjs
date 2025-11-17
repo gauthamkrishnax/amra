@@ -5,6 +5,8 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   // Override default ignores of eslint-config-next.
   globalIgnores([
+    "commitlint.config.js",
+    "prettier.config.js",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
