@@ -22,7 +22,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${poppinsFont.variable} bg-complimentary text-white antialiased`}
+        className={`${poppinsFont.variable} bg-accent text-white antialiased`}
       >
         <SignIn initialUser={currentUser?.toJSON()} />
         {children}
