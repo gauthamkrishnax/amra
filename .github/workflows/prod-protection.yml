@@ -1,0 +1,53 @@
+name: 🔒 PROD Branch Protection
+
+on:
+  pull_request:
+    branches: [PROD]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  security-checks:
+    name: 🛡️ Security & Quality Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔍 Security audit
+        run: pnpm audit --audit-level=moderate
+        continue-on-error: false
+
+      - name: 🧹 Run ESLint
+        run: pnpm lint
+
+      - name: 💅 Check code formatting
+        run: pnpm exec prettier --check .
+
+      - name: 🏗️ Build check
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: ✅ All security checks passed
+        if: success()
+        run: |
+          echo "✅ Security audit passed"
+          echo "✅ Code quality checks passed"
+          echo "✅ Production build successful"
+          echo "🚀 Ready for deployment to PROD"

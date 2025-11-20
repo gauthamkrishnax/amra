@@ -4,10 +4,11 @@ This document describes all the automated workflows set up for this project.
 
 ## 📋 Overview
 
-Our CI/CD pipeline includes two main workflows that automatically run on pull requests to master:
+Our CI/CD pipeline includes three main workflows:
 
-1. **CI - Lint & Format** - Ensures code quality
-2. **Auto Label PR** - Automatically categorizes PRs
+1. **CI - Lint & Format** - Ensures code quality on PRs to `master` and `PROD`
+2. **PROD Branch Protection** - Enhanced security checks for production deployments
+3. **Auto Label PR** - Automatically categorizes PRs
 
 ---
 
@@ -15,7 +16,7 @@ Our CI/CD pipeline includes two main workflows that automatically run on pull re
 
 ### 1. 🚀 CI - Lint & Format (`ci.yml`)
 
-**Triggers:** Pull requests to `master` branch
+**Triggers:** Pull requests to `master` and `PROD` branches
 
 **Jobs:**
 
@@ -41,7 +42,56 @@ pnpm format
 
 ---
 
-### 2. 🏷️ Auto Label PR (`pr-labeler.yml`)
+### 2. 🔒 PROD Branch Protection (`prod-protection.yml`)
+
+**Triggers:** Pull requests to `PROD` branch
+
+**Purpose:** Provides enhanced security and quality checks before deploying to production on Netlify.
+
+**Jobs:**
+
+#### 🛡️ Security & Quality Gates
+- **🔍 Security Audit** - Runs `pnpm audit` to detect vulnerable dependencies (blocks on moderate+ severity)
+- **🧹 ESLint Check** - Validates code quality
+- **💅 Prettier Format Check** - Ensures consistent formatting
+- **🏗️ Build Check** - Validates production build succeeds
+
+**Why it's critical:**
+
+- Prevents vulnerable dependencies from reaching production
+- Ensures production builds work before deployment
+- Provides a safety net for critical deployments
+- Documents deployment requirements
+
+**How to fix failures:**
+
+```bash
+# Run full security check locally
+pnpm run prod:verify
+
+# Fix specific issues
+pnpm run security:audit  # Check dependencies
+pnpm run lint            # Fix linting
+pnpm run format          # Fix formatting
+pnpm run build           # Test production build
+```
+
+**Production Deployment Workflow:**
+
+```
+Feature Branch → PR to master → Review & Merge
+       ↓
+   master → PR to PROD → Security Checks → Review → Merge
+       ↓
+   Netlify Auto-Deploy
+```
+
+**See Also:**
+- [Branch Protection Guidelines](.github/BRANCH_PROTECTION.md)
+
+---
+
+### 3. 🏷️ Auto Label PR (`pr-labeler.yml`)
 
 **Triggers:** PR opened, synchronized, or reopened
 
@@ -96,6 +146,9 @@ To use these workflows, create these labels in your GitHub repository:
 | `📚 documentation` | `#0075ca` | Documentation updates   |
 | `🔄 workflows`     | `#000000` | GitHub workflow changes |
 | `📄 content`       | `#6f42c1` | Content changes         |
+| `🚀 deployment`    | `#fbca04` | Production deployment   |
+| `🐛 hotfix`        | `#d73a4a` | Critical production fix |
+| `🔒 security`      | `#ee0701` | Security-related        |
 
 ### How to create labels:
 
@@ -120,6 +173,9 @@ gh label create "🔧 config" --color "d4c5f9" --description "Configuration chan
 gh label create "📚 documentation" --color "0075ca" --description "Documentation updates"
 gh label create "🔄 workflows" --color "000000" --description "GitHub workflow changes"
 gh label create "📄 content" --color "6f42c1" --description "Content changes"
+gh label create "🚀 deployment" --color "fbca04" --description "Production deployment"
+gh label create "🐛 hotfix" --color "d73a4a" --description "Critical production fix"
+gh label create "🔒 security" --color "ee0701" --description "Security-related"
 ```
 
 ---
@@ -180,7 +236,10 @@ Edit `.github/labeler.yml` and add new patterns:
 
 - Make sure workflows are enabled in your repository settings
 - Check that you've pushed the `.github/workflows/` files to GitHub
-- Verify you're creating PRs to the `master` branch (CI only runs for PRs to master)
+- Verify you're creating PRs to the correct branch:
+  - `ci.yml` runs on PRs to `master` and `PROD`
+  - `prod-protection.yml` runs only on PRs to `PROD`
+  - `pr-labeler.yml` runs on all PRs
 
 ### Labels not being applied?
 
@@ -196,9 +255,30 @@ Edit `.github/labeler.yml` and add new patterns:
 
 ---
 
+## 🔐 PROD Branch Security
+
+For deploying to the `PROD` branch (Netlify production):
+
+1. **Required Checks:**
+   - All CI checks must pass
+   - Security audit must pass
+   - Production build must succeed
+   - Code review required
+
+2. **Best Practices:**
+   - Always create PRs from `master` to `PROD`
+   - Run `pnpm run prod:verify` locally before creating PR
+   - Have rollback plan ready
+
+3. **Documentation:**
+   - [Branch Protection Guide](.github/BRANCH_PROTECTION.md)
+   - [Netlify Deployment Status](https://app.netlify.com/projects/amralove/deploys)
+
 ## 📚 Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [GitHub Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches)
+- [Netlify Deploy Documentation](https://docs.netlify.com/site-deploys/overview/)
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [ESLint](https://eslint.org/)
 - [Prettier](https://prettier.io/)
