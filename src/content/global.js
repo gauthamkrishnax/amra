@@ -1,4 +1,4 @@
 export default global = {
-  name: "Amra",
+  name: "amra",
   description: "Amra is a platform for couples to connect with each other",
 };
