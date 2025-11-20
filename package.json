@@ -8,6 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "security:audit": "pnpm audit --audit-level=moderate",
+    "security:check": "pnpm run lint && pnpm run format:check && pnpm run security:audit",
+    "prod:verify": "pnpm run security:check && pnpm run build",
     "prepare": "husky"
   },
   "dependencies": {
