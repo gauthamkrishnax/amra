@@ -4,32 +4,29 @@ This document describes all the automated workflows set up for this project.
 
 ## 📋 Overview
 
-Our CI/CD pipeline includes three main workflows that automatically run on pull requests:
+Our CI/CD pipeline includes two main workflows that automatically run on pull requests to master:
 
-1. **CI - Build, Lint & Format** - Ensures code quality
+1. **CI - Lint & Format** - Ensures code quality
 2. **Auto Label PR** - Automatically categorizes PRs
-3. **Auto Update PR Description** - Generates helpful PR summaries
 
 ---
 
 ## 🔍 Workflow Details
 
-### 1. 🚀 CI - Build, Lint & Format (`ci.yml`)
+### 1. 🚀 CI - Lint & Format (`ci.yml`)
 
-**Triggers:** Push to `main`/`develop` branches, PRs to these branches
+**Triggers:** Pull requests to `master` branch
 
 **Jobs:**
 
 - **🧹 ESLint Check** - Validates code follows linting rules
 - **💅 Prettier Format Check** - Ensures consistent code formatting
-- **🏗️ Build Next.js App** - Verifies the app builds successfully
-- **📝 Commit Message Check** - Validates conventional commit messages (PR only)
+- **📝 Commit Message Check** - Validates conventional commit messages
 
 **Requirements:**
 
 - All ESLint rules must pass
 - Code must be formatted with Prettier
-- Next.js build must succeed
 - Commit messages must follow conventional commits format
 
 **How to fix failures:**
@@ -40,9 +37,6 @@ pnpm lint
 
 # Fix formatting
 pnpm format
-
-# Build locally
-pnpm build
 ```
 
 ---
@@ -74,56 +68,6 @@ pnpm build
 - Quick visual understanding of what the PR changes
 - Helps prioritize reviews (smaller PRs first)
 - Encourages better PR practices
-
----
-
-### 3. 📝 Auto Update PR Description (`pr-description-updater.yml`)
-
-**Triggers:** PR opened or synchronized (new commits pushed)
-
-**What it does:**
-Automatically appends a detailed summary to your PR description including:
-
-- **📊 Changes Overview** - Files changed, lines added/deleted
-- **📁 Files Changed by Category** - Organized breakdown of all changes
-- **✅ Reviewer Checklist** - Helpful reminders for reviewers
-
-**Example output:**
-
-```markdown
----
-
-## 🤖 Auto-Generated PR Summary
-
-### 📊 Changes Overview
-
-- **Files Changed:** 5
-- **Lines Added:** +120
-- **Lines Deleted:** -45
-- **Total Changes:** 165
-
-### 📁 Files Changed by Category
-
-#### 📱 Frontend (3 files)
-
-- `src/app/page.js` (+50/-20)
-- `src/app/layout.js` (+30/-10)
-- `src/ui/components/Button.js` (+40/-15)
-
-### ✅ Reviewer Checklist
-
-- [ ] Code follows project conventions
-- [ ] All CI checks pass
-- [ ] No unintended changes included
-- [ ] Changes are well-tested
-```
-
-**Benefits:**
-
-- Saves time writing PR descriptions
-- Provides consistent structure
-- Makes reviews easier
-- Updates automatically with new commits
 
 ---
 
@@ -220,10 +164,6 @@ Edit `.github/labeler.yml` and add new patterns:
       - any-glob-to-any-file: "your/path/**/*"
 ```
 
-### Customizing PR Description Template
-
-Edit `.github/workflows/pr-description-updater.yml` in the script section to modify what gets included in the auto-generated summary.
-
 ---
 
 ## 📊 Monitoring Workflows
@@ -240,7 +180,7 @@ Edit `.github/workflows/pr-description-updater.yml` in the script section to mod
 
 - Make sure workflows are enabled in your repository settings
 - Check that you've pushed the `.github/workflows/` files to GitHub
-- Verify the branch names in workflow triggers match your branches
+- Verify you're creating PRs to the `master` branch (CI only runs for PRs to master)
 
 ### Labels not being applied?
 
@@ -252,7 +192,6 @@ Edit `.github/workflows/pr-description-updater.yml` in the script section to mod
 
 - Run `pnpm lint` locally to check for linting issues
 - Run `pnpm format` to fix formatting
-- Run `pnpm build` to verify the build works
 - Check commit messages follow conventional commits
 
 ---
