@@ -51,6 +51,7 @@ pnpm format
 **Jobs:**
 
 #### 🛡️ Security & Quality Gates
+
 - **🔍 Security Audit** - Runs `pnpm audit` to detect vulnerable dependencies (blocks on moderate+ severity)
 - **🧹 ESLint Check** - Validates code quality
 - **💅 Prettier Format Check** - Ensures consistent formatting
@@ -87,6 +88,7 @@ Feature Branch → PR to master → Review & Merge
 ```
 
 **See Also:**
+
 - [Branch Protection Guidelines](.github/BRANCH_PROTECTION.md)
 
 ---
