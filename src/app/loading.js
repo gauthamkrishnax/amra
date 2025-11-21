@@ -1,5 +1,5 @@
-import { LogoBig } from "@/app/ui/components/logo";
-import Splashscreen from "@/app/ui/svg/splashScreen";
+import { LogoBig } from "@/ui/components/logo";
+import Splashscreen from "@/ui/svg/splashScreen";
 
 export default function Loading() {
   return (

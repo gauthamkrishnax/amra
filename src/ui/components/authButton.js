@@ -1,14 +1,18 @@
 "use client";
 
 import { deleteCookie, setCookie } from "cookies-next";
+import { LogIn } from "lucide-react";
 
 import { useEffect } from "react";
 
+import content from "@/content/signIn";
 import {
   onIdTokenChanged,
   signInWithGoogle,
   signOut,
 } from "@/lib/firebase/auth";
+
+import Button from "./button";
 
 function useUserSession(initialUser) {
   useEffect(() => {
@@ -52,12 +56,10 @@ export default function SignIn({ initialUser }) {
           Sign out
         </button>
       ) : (
-        <button
-          className="bg-primary rounded-md px-4 py-2 text-white"
-          onClick={handleSignIn}
-        >
-          Sign in with Google
-        </button>
+        <Button className="mb-40 ml-8 font-bold" onClick={handleSignIn}>
+          {content.buttonText}
+          <LogIn></LogIn>
+        </Button>
       )}
     </div>
   );
