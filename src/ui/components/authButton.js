@@ -47,16 +47,11 @@ export default function SignIn({ initialUser }) {
   };
 
   return (
-    <div>
+    <div className="flex justify-center">
       {user ? (
-        <button
-          className="bg-primary rounded-md px-4 py-2 text-white"
-          onClick={handleSignOut}
-        >
-          Sign out
-        </button>
+        <Button onClick={handleSignOut}>Sign out</Button>
       ) : (
-        <Button className="mb-40 ml-8 font-bold" onClick={handleSignIn}>
+        <Button onClick={handleSignIn}>
           {content.buttonText}
           <LogIn></LogIn>
         </Button>
