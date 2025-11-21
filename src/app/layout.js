@@ -1,10 +1,8 @@
 import { Poppins } from "next/font/google";
 
-import { getAuthenticatedAppForUser } from "@/app/lib/firebase/serverApp";
-import SignIn from "@/app/ui/components/signIn";
 import content from "@/content/global";
-
-import "./globals.css";
+import { getAuthenticatedAppForUser } from "@/lib/firebase/serverApp";
+import "@/ui/globals.css";
 
 const poppinsFont = Poppins({
   variable: "--font-poppins",
@@ -19,12 +17,16 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const { currentUser } = await getAuthenticatedAppForUser();
+
+  if (!currentUser) {
+    redirect("/signIn");
+  }
+
   return (
     <html lang="en">
       <body
         className={`${poppinsFont.variable} bg-accent text-white antialiased`}
       >
-        <SignIn initialUser={currentUser?.toJSON()} />
         {children}
       </body>
     </html>

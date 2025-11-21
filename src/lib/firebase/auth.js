@@ -5,7 +5,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 
-import { auth } from "@/app/lib/firebase/clientApp";
+import { auth } from "@/lib/firebase/clientApp";
 
 export function onAuthStateChanged(cb) {
   return _onAuthStateChanged(auth, cb);
