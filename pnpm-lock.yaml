@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     dependencies:
+      cookies-next:
+        specifier: ^6.1.1
+        version: 6.1.1(next@16.0.3(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       firebase:
         specifier: ^12.6.0
         version: 12.6.0
@@ -35,9 +38,6 @@ importers:
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
-      cookies-next:
-        specifier: ^6.1.1
-        version: 6.1.1(next@16.0.3(@babel/core@7.28.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       eslint:
         specifier: ^9
         version: 9.39.1(jiti@2.6.1)
