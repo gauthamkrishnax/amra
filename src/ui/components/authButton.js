@@ -8,7 +8,7 @@ import {
   onIdTokenChanged,
   signInWithGoogle,
   signOut,
-} from "@/app/lib/firebase/auth";
+} from "@/lib/firebase/auth";
 
 function useUserSession(initialUser) {
   useEffect(() => {

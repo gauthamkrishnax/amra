@@ -1,6 +1,6 @@
 import { doc, setDoc } from "firebase/firestore";
 
-import { db } from "@/app/lib/firebase/clientApp";
+import { db } from "@/lib/firebase/clientApp";
 
 export async function createUser(user) {
   const userRef = doc(db, "users", user.uid);
