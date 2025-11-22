@@ -1,4 +1,5 @@
 import ExpenseContent from "@/content/expense";
+import AddExpenseButton from "@/ui/components/addExpenseButton";
 import ExpenseCallout from "@/ui/components/expenseCallout";
 import ExpenseMetric from "@/ui/components/expenseMetrics";
 
@@ -28,45 +29,54 @@ export default function ExpensePage() {
         </p>
       </div>
       <div>
-        <div className="bg-accent shadow-top max-h-96 overflow-y-auto rounded-t-[40]">
+        <div className="bg-accent shadow-top max-h-96 overflow-y-auto rounded-t-[40] p-5">
           <ExpenseCallout
             title="Swiggy Order"
             category="Groceries"
             amount={1000}
+            date="12 Aug 2024"
           ></ExpenseCallout>
           <ExpenseCallout
             title="Swiggy Order"
             category="Bills"
             amount="1000 INR"
+            date="12 Aug 2024"
           ></ExpenseCallout>
           <ExpenseCallout
             title="Swiggy Order"
             category="Entertainment"
             amount="1000 INR"
+            date="12 Aug 2024"
           ></ExpenseCallout>
           <ExpenseCallout
             title="Swiggy Order"
             category="Miscellaneous"
             amount="1000 INR"
+            date="12 Aug 2024"
           ></ExpenseCallout>
           <ExpenseCallout
             title="Swiggy Order"
             category="Food"
             amount="1000 INR"
+            date="12 Aug 2024"
           ></ExpenseCallout>
           <ExpenseCallout
             title="Swiggy Order"
             category="Food"
             amount="1000 INR"
+            date="12 Aug 2024"
           ></ExpenseCallout>
           <ExpenseCallout
             title="Swiggy Order"
             category="Food"
             amount="1000 INR"
+            date="12 Aug 2024"
           ></ExpenseCallout>
         </div>
       </div>
-      <div className="shadow-top absolute bottom-0 h-30 w-full bg-amber-50"></div>
+      <div className="shadow-top-darker bg-accent absolute bottom-0 h-20 w-full rounded-2xl">
+        <AddExpenseButton></AddExpenseButton>
+      </div>
     </div>
   );
 }
