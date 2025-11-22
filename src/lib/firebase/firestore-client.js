@@ -85,6 +85,7 @@ export async function findUserByCode(code) {
 /**
  * Creates a connection between two users in the couples collection
  * Uses a deterministic document ID to ensure only one connection exists per pair
+ * Creates separate documents for each user with their nickname
  * @param {string} user1Id - First user's UID
  * @param {string} user2Id - Second user's UID
  * @returns {string} The couple document ID
@@ -99,21 +100,38 @@ export async function createCouple(user1Id, user2Id) {
     throw new Error("Cannot create couple with the same user");
   }
 
+  // Fetch both users' data to get their nicknames
+  const user1Data = await getUser(user1Id);
+  const user2Data = await getUser(user2Id);
+
+  if (!user1Data || !user2Data) {
+    throw new Error("One or both users not found");
+  }
+
   // Create deterministic ID by sorting user IDs
   const sortedIds = [user1Id, user2Id].sort();
   const coupleId = `${sortedIds[0]}_${sortedIds[1]}`;
 
+  // Create main couple document with users array (for efficient querying)
   const coupleRef = doc(db, "couples", coupleId);
-  const coupleData = {
+  await setDoc(coupleRef, {
     users: [user1Id, user2Id],
     createdAt: serverTimestamp(),
-  };
+  });
 
-  // Note: We don't check if couple exists first because:
-  // 1. Checking requires read permission which fails for non-existent docs
-  // 2. Deterministic ID ensures same couple always has same ID
-  // 3. Overwriting with same data is idempotent
-  await setDoc(coupleRef, coupleData);
+  // Create separate documents for each user with their nickname
+  const user1Ref = doc(db, "couples", coupleId, "users", user1Id);
+  const user2Ref = doc(db, "couples", coupleId, "users", user2Id);
+
+  await setDoc(user1Ref, {
+    nickname: user1Data.nickname,
+    createdAt: serverTimestamp(),
+  });
+
+  await setDoc(user2Ref, {
+    nickname: user2Data.nickname,
+    createdAt: serverTimestamp(),
+  });
 
   return coupleId;
 }
