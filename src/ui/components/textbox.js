@@ -1,7 +1,7 @@
 export default function Textbox({ children, variant = "outline", ...props }) {
   const variants = {
     outline: "border border-gray-300",
-    filled: "bg-gray-100",
+    filled: "bg-gray-100 text-accent",
   };
   return (
     <div className="my-5 flex flex-col gap-2">
