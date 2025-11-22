@@ -4,6 +4,7 @@ const ExpensePage = {
   expenseThisMonth: "Expense this Month",
   amountOwed: "You Owe",
   recentExpenses: "Recent Expenses",
+  whoPaid: "Who is broke this time?",
 };
 
 export default ExpensePage;
