@@ -18,10 +18,6 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const { currentUser } = await getAuthenticatedAppForUser();
 
-  // if (!currentUser) {
-  //   redirect("/signIn");
-  // }
-
   return (
     <html lang="en">
       <body
