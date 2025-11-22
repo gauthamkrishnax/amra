@@ -6,9 +6,6 @@ import SignIn from "@/ui/components/authButton";
 
 export default async function Page() {
   const { currentUser } = await getAuthenticatedAppForUser();
-  // if (currentUser) {
-  //   redirect("/connect");
-  // }
 
   // Serialize user object to pass to client component
   const serializedUser = currentUser
