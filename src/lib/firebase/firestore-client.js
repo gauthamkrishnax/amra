@@ -117,3 +117,25 @@ export async function createCouple(user1Id, user2Id) {
 
   return coupleId;
 }
+
+/**
+ * Checks if a user is part of a couple
+ * @param {string} userId - User's UID
+ * @returns {Object|null} Couple data if exists, null otherwise
+ */
+export async function getUserCouple(userId) {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  const couplesRef = collection(db, "couples");
+  const q = query(couplesRef, where("users", "array-contains", userId));
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    return null;
+  }
+
+  const coupleDoc = querySnapshot.docs[0];
+  return { id: coupleDoc.id, ...coupleDoc.data() };
+}

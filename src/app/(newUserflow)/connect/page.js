@@ -12,6 +12,7 @@ import {
   createCouple,
   findUserByCode,
   getUser,
+  getUserCouple,
 } from "@/lib/firebase/firestore-client";
 import Button from "@/ui/components/button";
 import Textbox from "@/ui/components/textbox";
@@ -32,6 +33,13 @@ export default function Connect() {
           const userData = await getUser(authUser.uid);
           if (userData) {
             setUser(userData);
+
+            // Check if already connected
+            const couple = await getUserCouple(authUser.uid);
+            if (couple) {
+              router.push("/");
+              return;
+            }
           } else {
             // User document doesn't exist, redirect to username page
             router.push("/username");
@@ -49,6 +57,26 @@ export default function Connect() {
 
     return () => unsubscribe();
   }, [router]);
+
+  // Poll for couple connection every 3 seconds
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const checkForCouple = async () => {
+      try {
+        const couple = await getUserCouple(currentUser.uid);
+        if (couple) {
+          router.push("/");
+        }
+      } catch (err) {
+        console.error("Error checking for couple:", err);
+      }
+    };
+
+    const intervalId = setInterval(checkForCouple, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [currentUser, router]);
 
   async function handleConnect(e) {
     e.preventDefault();
