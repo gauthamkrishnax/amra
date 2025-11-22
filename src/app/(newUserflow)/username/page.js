@@ -1,7 +1,9 @@
 "use client";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
 
 import { auth } from "@/lib/firebase/clientApp";
@@ -78,7 +80,7 @@ export default function Username() {
       <h1 className="mb-10 max-w-3xs pt-10 text-4xl font-bold">
         What should your partner call you?
       </h1>
-      
+
       <form onSubmit={handleSubmit}>
         <Textbox
           label="Enter your nickname:"
@@ -88,13 +90,13 @@ export default function Username() {
           maxLength={50}
           placeholder="Your nickname"
         />
-        
+
         {error && (
           <p className="my-2 font-semibold text-red-600" role="alert">
             {error}
           </p>
         )}
-        
+
         <Button type="submit" disabled={submitting}>
           {submitting ? "Creating..." : "Continue"}
         </Button>
