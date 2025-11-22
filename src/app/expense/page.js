@@ -74,7 +74,7 @@ export default function ExpensePage() {
           ></ExpenseCallout>
         </div>
       </div>
-      <ExpenseFooter></ExpenseFooter>
+      <ExpenseFooter user1="Thumbi" user2="Poopu"></ExpenseFooter>
     </div>
   );
 }
