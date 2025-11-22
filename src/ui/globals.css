@@ -6,6 +6,12 @@
   --color-complimentary: #2e0927; /* Dark Purple */
   --color-secondary: #ff8c00; /* Light Orange */
   --color-tertiary: #04756f; /* Pantone Green */
+
+  --shadow-top: 0 -20px 30px -3px rgba(0, 0, 0, 0.1);
+  --shadow-top-darker: 0 -20px 30px -3px rgba(0, 0, 0, 0.3);
+  --shadow-bottom-darker: 0 20px 30px -3px rgba(0, 0, 0, 0.3);
+  --shadow-top-bottom-darker:
+    var(--shadow-top-darker), var(--shadow-bottom-darker);
 }
 
 body {
