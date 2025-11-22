@@ -1,6 +1,6 @@
 import ExpenseContent from "@/content/expense";
-import AddExpenseButton from "@/ui/components/addExpenseButton";
 import ExpenseCallout from "@/ui/components/expenseCallout";
+import ExpenseFooter from "@/ui/components/expenseFooter";
 import ExpenseMetric from "@/ui/components/expenseMetrics";
 
 export default function ExpensePage() {
@@ -74,9 +74,7 @@ export default function ExpensePage() {
           ></ExpenseCallout>
         </div>
       </div>
-      <div className="shadow-top-darker bg-accent absolute bottom-0 h-20 w-full rounded-2xl">
-        <AddExpenseButton></AddExpenseButton>
-      </div>
+      <ExpenseFooter></ExpenseFooter>
     </div>
   );
 }
