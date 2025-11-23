@@ -1,13 +1,14 @@
 import { useState } from "react";
 
-export default function CategoryDropDown({ setCategory }) {
+export default function CategoryDropDown({ setCategory, value }) {
   return (
     <div className="flex flex-col gap-1">
       <select
         className="w-full rounded-xl border border-gray-300 p-2 font-light text-zinc-300"
         onChange={(e) => setCategory(e.target.value)}
+        value={value || ""}
       >
-        <option value="" disabled hidden>
+        <option value="" disabled>
           Select Category
         </option>
         <option value="Food">Food</option>
