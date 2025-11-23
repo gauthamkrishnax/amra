@@ -11,8 +11,6 @@ import {
 } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 
-import { cacheTag, revalidateTag } from "next/cache";
-
 import { getAuthenticatedAppForUser } from "./serverApp";
 
 /**
@@ -20,9 +18,6 @@ import { getAuthenticatedAppForUser } from "./serverApp";
  * @returns {Promise<Object|null>} Couple data or null if not found
  */
 export async function readCoupleData() {
-  "use cache";
-  cacheTag("couple-data");
-
   const { firebaseServerApp, currentUser } = await getAuthenticatedAppForUser();
 
   if (!currentUser) {
@@ -42,7 +37,7 @@ export async function readCoupleData() {
   }
 
   const coupleDoc = querySnapshot.docs[0];
-  return { id: coupleDoc.id, ...coupleDoc.data() };
+  return { id: coupleDoc.id, ...coupleDoc.data(), currentUser };
 }
 
 /**
@@ -79,7 +74,4 @@ export async function writeCoupleData(data) {
     },
     { merge: true },
   );
-
-  // Revalidate the cached couple data
-  revalidateTag("couple-data");
 }
