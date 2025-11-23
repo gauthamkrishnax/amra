@@ -5,6 +5,7 @@ const ExpensePage = {
   amountOwed: "You Owe",
   recentExpenses: "Recent Expenses",
   whoPaid: "Who is broke this time?",
+  deleteExpense: "Delete this expense?",
 };
 
 export default ExpensePage;
