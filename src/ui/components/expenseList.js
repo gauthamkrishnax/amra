@@ -12,6 +12,29 @@ import ExpenseMetric from "@/ui/components/expenseMetrics";
 export default async function ExpenseList() {
   const couple = await readCoupleData();
 
+  const totalExpenses = couple.expenses?.reduce(
+    (acc, expense) => acc + Number(expense.amount),
+    0,
+  );
+
+  const calcOwed = (exp, a = "Poopu", b = "Thumbi") => {
+    const t = (n) =>
+      exp.filter((e) => e.paidBy === n).reduce((s, e) => s + +e.amount, 0);
+    const A = t(a),
+      B = t(b);
+    return A === B
+      ? { string: "Both are settled", amount: 0 }
+      : A > B
+        ? { string: `${b} owes ${a}`, amount: A - B }
+        : { string: `${a} owes ${b}`, amount: B - A };
+  };
+
+  const { string: owedString, amount: owedAmount } = calcOwed(
+    couple.expenses,
+    couple.users[0].nickname,
+    couple.users[1].nickname,
+  );
+
   const addExpense = async (expense) => {
     "use server";
     const couple = await readCoupleData();
@@ -44,10 +67,10 @@ export default async function ExpenseList() {
         <div className="absolute right-0 -bottom-10 left-0">
           {" "}
           <ExpenseMetric
-            expense="$2345"
-            owed="$1234"
+            expense={`₹${parseFloat(totalExpenses).toLocaleString("en-IN")}`}
+            owed={`₹${parseFloat(owedAmount).toLocaleString("en-IN")}`}
             expenseDesc={ExpenseContent.expenseThisMonth}
-            owedDesc={ExpenseContent.amountOwed}
+            owedDesc={owedString}
           ></ExpenseMetric>
         </div>
       </div>
@@ -65,7 +88,7 @@ export default async function ExpenseList() {
               key={expense.id}
               title={expense.title}
               category={expense.category}
-              amount={expense.amount}
+              amount={parseFloat(expense.amount).toLocaleString("en-IN")}
               date={expense.date}
               paidBy={expense.paidBy}
             ></ExpenseCallout>
