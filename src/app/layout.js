@@ -2,6 +2,7 @@ import { Poppins } from "next/font/google";
 
 import content from "@/content/global";
 import { getAuthenticatedAppForUser } from "@/lib/firebase/serverApp";
+import AuthProvider from "@/ui/components/authProvider";
 import "@/ui/globals.css";
 
 const poppinsFont = Poppins({
@@ -23,7 +24,7 @@ export default async function RootLayout({ children }) {
       <body
         className={`${poppinsFont.variable} bg-accent text-white antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
