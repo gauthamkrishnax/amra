@@ -2,6 +2,7 @@ import { Poppins } from "next/font/google";
 
 import content from "@/content/global";
 import { getAuthenticatedAppForUser } from "@/lib/firebase/serverApp";
+import AuthProvider from "@/ui/components/authProvider";
 import "@/ui/globals.css";
 
 const poppinsFont = Poppins({
@@ -13,6 +14,22 @@ const poppinsFont = Poppins({
 export const metadata = {
   title: content.name,
   description: content.description,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: content.name,
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  themeColor: "#000000",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 };
 
 export default async function RootLayout({ children }) {
@@ -23,7 +40,7 @@ export default async function RootLayout({ children }) {
       <body
         className={`${poppinsFont.variable} bg-accent text-white antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
