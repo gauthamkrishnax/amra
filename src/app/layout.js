@@ -14,18 +14,18 @@ const poppinsFont = Poppins({
 export const metadata = {
   title: content.name,
   description: content.description,
-  manifest: '/manifest.json',
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: "default",
     title: content.name,
   },
   formatDetection: {
     telephone: false,
   },
-  themeColor: '#000000',
+  themeColor: "#000000",
   viewport: {
-    width: 'device-width',
+    width: "device-width",
     initialScale: 1,
     maximumScale: 1,
     userScalable: false,
