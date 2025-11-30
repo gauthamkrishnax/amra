@@ -14,6 +14,22 @@ const poppinsFont = Poppins({
 export const metadata = {
   title: content.name,
   description: content.description,
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: content.name,
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  themeColor: "#000000",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 };
 
 export default async function RootLayout({ children }) {
