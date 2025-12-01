@@ -15,7 +15,7 @@ export default function SetGoals({ nickname }) {
   const handleGoals = (e) => {
     e.preventDefault();
 
-    const goals = { goalOne, goalTwo, goalThree, user };
+    const goals = { goalOne, goalTwo, goalThree };
     console.log(goals);
 
     addGoals(goals);
