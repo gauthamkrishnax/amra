@@ -1,3 +1,5 @@
+import { MenuIcon } from "lucide-react";
+
 import { revalidatePath } from "next/cache";
 
 import ExpenseContent from "@/content/expense";
@@ -8,6 +10,8 @@ import {
 import ExpenseCallout from "@/ui/components/expenseCallout";
 import ExpenseFooter from "@/ui/components/expenseFooter";
 import ExpenseMetric from "@/ui/components/expenseMetrics";
+
+import ExpenseSettlement from "./expenseSettlement";
 
 export default async function ExpenseList() {
   const couple = await readCoupleData();
@@ -55,15 +59,28 @@ export default async function ExpenseList() {
     revalidatePath("/expense");
   };
 
+  const clearExpense = async () => {
+    "use server";
+    await writeCoupleData({
+      expenses: [],
+    });
+    revalidatePath("/expense");
+  };
+
   return (
     <>
       <div className="relative">
-        <div className="bg-accent h-35 rounded-b-[40] drop-shadow-2xl">
-          <h1 className="text-md mx-10 pt-12 font-bold">
-            {ExpenseContent.title}
-          </h1>
-          <p className="mx-10 text-xs italic">{ExpenseContent.description}</p>
+        <div className="bg-accent flex h-35 items-center justify-between rounded-b-[40] drop-shadow-2xl">
+          <div className="pb-5">
+            <h1 className="text-md mx-10 font-bold">{ExpenseContent.title}</h1>
+            <p className="mx-10 text-xs italic">{ExpenseContent.description}</p>
+          </div>
+          <ExpenseSettlement
+            expenses={couple.expenses}
+            clearExpense={clearExpense}
+          />
         </div>
+
         <div className="absolute right-0 -bottom-10 left-0">
           {" "}
           <ExpenseMetric
@@ -81,18 +98,20 @@ export default async function ExpenseList() {
       </div>
       <div>
         <div className="bg-accent shadow-top max-h-96 overflow-y-auto rounded-t-[40] p-5">
-          {couple.expenses?.map((expense) => (
-            <ExpenseCallout
-              removeExpense={removeExpense}
-              expenseId={expense.id}
-              key={expense.id}
-              title={expense.title}
-              category={expense.category}
-              amount={parseFloat(expense.amount).toLocaleString("en-IN")}
-              date={expense.date}
-              paidBy={expense.paidBy}
-            ></ExpenseCallout>
-          ))}
+          {couple.expenses
+            ?.sort((a, b) => new Date(b.date) - new Date(a.date))
+            .map((expense) => (
+              <ExpenseCallout
+                removeExpense={removeExpense}
+                expenseId={expense.id}
+                key={expense.id}
+                title={expense.title}
+                category={expense.category}
+                amount={parseFloat(expense.amount).toLocaleString("en-IN")}
+                date={expense.date}
+                paidBy={expense.paidBy}
+              ></ExpenseCallout>
+            ))}
         </div>
       </div>
       <ExpenseFooter user1="Thumbi" user2="Poopu" addExpense={addExpense} />
