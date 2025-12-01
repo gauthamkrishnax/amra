@@ -26,9 +26,10 @@ export default function AuthProvider({ children }) {
         const idToken = await user.getIdToken();
 
         // Set cookie with proper security options
-        // maxAge is set to 1 hour (3600 seconds) to match Firebase token expiration
+        // maxAge is set to 30 days to provide a long session
+        // Firebase will automatically refresh the token in the background
         await setCookie("__session", idToken, {
-          maxAge: 60 * 60, // 1 hour in seconds
+          maxAge: 60 * 60 * 24 * 30, // 30 days in seconds
           path: "/",
           sameSite: "lax",
           secure: process.env.NODE_ENV === "production",
