@@ -1,9 +1,4 @@
-export default function Textbox({
-  children,
-  variant = "outline",
-  setValue,
-  ...props
-}) {
+export default function Textbox({ variant = "outline", setValue, ...props }) {
   const variants = {
     outline: "border border-gray-300 rounded-xl",
     filled: "bg-gray-100 text-accent rounded-xl",
