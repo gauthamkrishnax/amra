@@ -7,6 +7,11 @@ import SignIn from "@/ui/components/authButton";
 export default async function Page() {
   const { currentUser } = await getAuthenticatedAppForUser();
 
+  // If user is already authenticated, redirect to home page
+  if (currentUser) {
+    redirect("/");
+  }
+
   // Serialize user object to pass to client component
   const serializedUser = currentUser
     ? {
