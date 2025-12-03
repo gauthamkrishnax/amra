@@ -19,10 +19,8 @@ import {
 import { getAuthenticatedAppForUser } from "@/lib/firebase/serverApp";
 
 export async function addGoals(goals) {
-  const { currentUser } = await getAuthenticatedAppForUser();
-  const uid = currentUser.uid;
-
   const couple = await readCoupleData();
+  const uid = couple.currentUser.uid;
 
   const userData = couple.userData || {};
 
@@ -37,10 +35,8 @@ export async function addGoals(goals) {
 }
 
 export async function addPartnerRewards(rewards) {
-  const { currentUser } = await getAuthenticatedAppForUser();
-  const uid = currentUser.uid;
-
   const couple = await readCoupleData();
+  const uid = couple.currentUser.uid;
 
   const userData = couple.userData || {};
 

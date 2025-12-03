@@ -1,7 +1,6 @@
 import { Poppins } from "next/font/google";
 
 import content from "@/content/global";
-import { getAuthenticatedAppForUser } from "@/lib/firebase/serverApp";
 import AuthProvider from "@/ui/components/authProvider";
 import "@/ui/globals.css";
 
@@ -34,8 +33,6 @@ export const viewport = {
 };
 
 export default async function RootLayout({ children }) {
-  const { currentUser } = await getAuthenticatedAppForUser();
-
   return (
     <html lang="en">
       <body
