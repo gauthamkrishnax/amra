@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { addGoals, getUserNickName } from "@/actions/actions";
+import { addGoals } from "@/actions/actions";
 import GoalContent from "@/content/goal";
 
 import Button from "./button";
