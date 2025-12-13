@@ -13,3 +13,11 @@ export async function getCurrentUser() {
     return null;
   }
 }
+
+export async function requireAuth() {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    throw new Error("Unauthorized");
+  }
+  return currentUser;
+}

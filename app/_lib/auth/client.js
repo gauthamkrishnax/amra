@@ -1,5 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/app/_lib/firebase/client.js";
+import { redirect } from "next/navigation";
 
 export async function signInWithGoogle() {
   // 1. Open Google popup
@@ -19,4 +20,6 @@ export async function signInWithGoogle() {
   if (!res.ok) {
     throw new Error("Failed to create session");
   }
+
+  redirect("/");
 }
