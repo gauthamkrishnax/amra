@@ -2,13 +2,13 @@ import { cookies } from "next/headers";
 import { adminAuth } from "@/app/_lib/firebase/admin";
 
 export async function getCurrentUser() {
-  const cookie = await cookies();
+  const cookieStore = await cookies();
+  const session = cookieStore.get("__session");
 
-  if (!cookie) return null;
-  const session = cookie.get("__session");
+  if (!session?.value) return null;
 
   try {
-    return await adminAuth.verifySessionCookie(session?.value, true);
+    return await adminAuth.verifySessionCookie(session.value, true);
   } catch {
     return null;
   }
