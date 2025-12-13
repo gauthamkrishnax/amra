@@ -24,7 +24,16 @@
     "eslint-config-next": "16.0.10",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
     "prettier": "3.7.4",
     "tailwindcss": "^4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*": [
+      "prettier --write --ignore-unknown"
+    ]
   }
 }

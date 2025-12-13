@@ -5,18 +5,4 @@ if [ "$branch" = "master" ] || [ "$branch" = "main" ]; then
   exit 1
 fi
 
-# Get staged files
-STAGED_JS=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx)$' || true)
-STAGED_ALL=$(git diff --cached --name-only --diff-filter=ACMR || true)
-
-# Run eslint only on staged JS files
-if [ -n "$STAGED_JS" ]; then
-  echo "$STAGED_JS" | xargs pnpm eslint --fix
-  echo "$STAGED_JS" | xargs git add
-fi
-
-# Run prettier only on staged files
-if [ -n "$STAGED_ALL" ]; then
-  echo "$STAGED_ALL" | xargs pnpm prettier --write
-  echo "$STAGED_ALL" | xargs git add
-fi
+pnpm lint-staged
