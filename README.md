@@ -1,7 +1,3 @@
-# Amra ❤️
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e5c9effb-747f-4864-b61e-c04bc22384a2/deploy-status)](https://app.netlify.com/projects/amralove/deploys)
-
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -33,33 +29,8 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deployment
+## Deploy on Vercel
 
-### Production
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-The `PROD` branch is automatically deployed to [Netlify](https://app.netlify.com/projects/amralove/deploys).
-
-**Security:** All changes require PR review, pass security audits, and complete CI checks. See [Branch Protection Guide](.github/BRANCH_PROTECTION.md) for details.
-
-### Development
-
-The `master` branch is for active development. Create feature branches from `master` and submit PRs.
-
-## Contributing
-
-1. Create feature branch from `master`
-2. Make your changes (pre-commit hooks auto-format code)
-3. Push (security checks run automatically)
-4. Submit PR to `master`
-5. After merge, promote to `PROD` via PR when ready to deploy
-
-**Pre-deployment check:**
-
-```bash
-pnpm run prod:verify  # Runs security audit, lint, format check, and build
-```
-
-## Documentation
-
-- [Branch Protection & Deployment](.github/BRANCH_PROTECTION.md)
-- [GitHub Workflows](.github/WORKFLOWS.md)
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
