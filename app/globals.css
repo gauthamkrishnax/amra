@@ -4,6 +4,15 @@
   --font-family-sans: var(--font-ramona), ui-sans-serif, system-ui, sans-serif;
 }
 
+@theme inline {
+  --color-primary: #3f3d56;
+  --color-mypink: #ff99c8;
+  --color-yellow: #fcf6bd;
+  --color-green: #d0f4de;
+  --color-purple: #e4c1f9;
+  --color-blue: ##a9def9;
+}
+
 body {
   font-family: var(--font-ramona), ui-sans-serif, system-ui, sans-serif;
   font-weight: 300;
