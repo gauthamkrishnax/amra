@@ -5,6 +5,12 @@ import { RandomConnectionString } from "@/app/_lib/utils/string";
 import { requireAuth } from "@/app/_lib/auth/server";
 import { redirect } from "next/navigation";
 
+export async function getUserConnectionCode() {
+  const currentUser = await requireAuth();
+  const userDoc = await adminDb.collection("users").doc(currentUser.uid).get();
+  return userDoc.data()?.connectionString || null;
+}
+
 export async function createUser(nickname) {
   if (!nickname) {
     throw new Error("Nickname is required");

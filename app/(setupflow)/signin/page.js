@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { signInWithGoogle } from "@/app/_lib/auth/client.js";
-import { redirect } from "next/navigation";
 
 export default function SignInPage() {
   const [error, setError] = useState(null);
