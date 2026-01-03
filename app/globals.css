@@ -7,10 +7,10 @@
 @theme inline {
   --color-primary: #3f3d56;
   --color-mypink: #ff99c8;
-  --color-yellow: #fcf6bd;
-  --color-green: #d0f4de;
-  --color-purple: #e4c1f9;
-  --color-blue: ##a9def9;
+  --color-myyellow: #fcf6bd;
+  --color-mygreen: #d0f4de;
+  --color-mypurple: #e4c1f9;
+  --color-myblue: #a9def9;
 }
 
 body {
