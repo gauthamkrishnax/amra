@@ -35,6 +35,7 @@ const SHAPE_MAP = {
 
 export default function Button({
   children,
+  action,
   color = "pink",
   shape = "default",
 }) {
@@ -53,7 +54,10 @@ export default function Button({
       >
         <path d={shapeObj.path} fill={svgFill} />
       </svg>
-      <BoringButton className="relative text-primary font-bold text-2xl px-3 py-1 break-word whitespace-normal">
+      <BoringButton
+        action={action}
+        className="relative text-primary font-bold text-2xl px-3 py-1 break-word whitespace-normal"
+      >
         {children}
       </BoringButton>
     </div>
