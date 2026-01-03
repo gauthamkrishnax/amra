@@ -1,10 +1,10 @@
 import BoringButton from "./BoringButton";
 const COLOR_MAP = {
   pink: "var(--color-mypink)",
-  green: "var(--color-green)",
-  purple: "var(--color-purple)",
-  yellow: "var(--color-yellow)",
-  blue: "var(--color-blue)",
+  green: "var(--color-mygreen)",
+  purple: "var(--color-mypurple)",
+  yellow: "var(--color-myyellow)",
+  blue: "var(--color-myblue)",
 };
 
 const SHAPE_MAP = {

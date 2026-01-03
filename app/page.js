@@ -1,5 +1,5 @@
-import BoringButton from "./_components/ui/BoringButton";
-import Button from "./_components/ui/Button";
+import Box from "./_components/ui/box";
+import Logo from "./_components/ui/Logo";
 
 export default async function Home() {
   async function handleClick() {
@@ -8,16 +8,8 @@ export default async function Home() {
   }
   return (
     <div>
-      <BoringButton action={handleClick}>Sign In / Sign Up</BoringButton>
-      <Button color="green" shape="shape1">
-        Expenses
-      </Button>
-      <Button color="purple" shape="shape3">
-        Thumbi
-      </Button>
-      <Button color="blue" shape="shape4">
-        Poopu
-      </Button>
+      <Box title="You have:" content="35 Points" className="pr-20 "></Box>
+      <Logo />
     </div>
   );
 }

@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { signInWithGoogle } from "@/app/_lib/auth/client.js";
+import Logo from "@/app/_components/ui/Logo";
+import SignInIllustration from "@/app/_illustrations/signin.jsx";
+import BoringButton from "@/app/_components/ui/BoringButton";
 
 export default function SignInPage() {
   const [error, setError] = useState(null);
@@ -20,14 +23,21 @@ export default function SignInPage() {
   };
 
   return (
-    <div>
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded-md disabled:opacity-50"
-        onClick={handleSignIn}
-        disabled={isLoading}
-      >
-        {isLoading ? "Signing in..." : "Sign In with Google"}
-      </button>
+    <div className=" p-10 pb-30 flex flex-col justify-between min-h-dvh">
+      <div>
+        <Logo className="" />
+
+        <p className="mt-8 text-3xl max-w-3/4">Sign up for the best love.</p>
+
+        <SignInIllustration className="mt-8" />
+      </div>
+
+      <div className="mt-8">
+        <BoringButton action={handleSignIn} disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign In with Google"}
+        </BoringButton>
+      </div>
+
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
