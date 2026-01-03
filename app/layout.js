@@ -1,6 +1,7 @@
 import "./globals.css";
 import { getCurrentUser } from "@/app/_lib/auth/server";
 import { redirect } from "next/navigation";
+import { ramona } from "@/app/_fonts";
 
 export const metadata = {
   title: "Amra - Love app",
@@ -11,7 +12,7 @@ export default async function RootLayout({ children }) {
   const user = await getCurrentUser();
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body className={`${ramona.variable} antialiased`}>{children}</body>
     </html>
   );
 }
