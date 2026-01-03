@@ -4,7 +4,7 @@ import { requireAuth } from "@/app/_lib/auth/server";
 import { adminDb } from "@/app/_lib/firebase/admin";
 import { redirect } from "next/navigation";
 
-export async function saveGoals(formData) {
+export async function saveGoals(formData, redirectTo = "/setRewards") {
   const currentUser = await requireAuth();
 
   const goals = {
@@ -36,10 +36,10 @@ export async function saveGoals(formData) {
       [`userDetails.${currentUser.uid}.goals`]: goals,
     });
 
-  redirect("/setRewards");
+  redirect(redirectTo);
 }
 
-export async function saveRewards(formData) {
+export async function saveRewards(formData, redirectTo = "/") {
   const currentUser = await requireAuth();
 
   const rewards = {
@@ -71,7 +71,7 @@ export async function saveRewards(formData) {
       [`userDetails.${currentUser.uid}.rewards`]: rewards,
     });
 
-  redirect("/");
+  redirect(redirectTo);
 }
 
 export async function getGoalsAndRewards() {
@@ -247,4 +247,70 @@ export async function redeemReward(rewardKey) {
     });
 
   return { cost, newTotal: newPoints };
+}
+
+export async function updateGoals(formData) {
+  const currentUser = await requireAuth();
+
+  const goals = {
+    goal1: formData.get("goal1"),
+    goal2: formData.get("goal2"),
+    goal3: formData.get("goal3"),
+  };
+
+  const couplesSnapshot = await adminDb
+    .collection("couples")
+    .where("users", "array-contains", currentUser.uid)
+    .limit(1)
+    .get();
+
+  if (couplesSnapshot.empty) {
+    throw new Error(
+      "Couple not found. Please connect with your partner first.",
+    );
+  }
+
+  const coupleDoc = couplesSnapshot.docs[0];
+
+  await adminDb
+    .collection("couples")
+    .doc(coupleDoc.id)
+    .update({
+      [`userDetails.${currentUser.uid}.goals`]: goals,
+    });
+
+  return { success: true };
+}
+
+export async function updateRewards(formData) {
+  const currentUser = await requireAuth();
+
+  const rewards = {
+    reward1: formData.get("reward1"),
+    reward2: formData.get("reward2"),
+    reward3: formData.get("reward3"),
+  };
+
+  const couplesSnapshot = await adminDb
+    .collection("couples")
+    .where("users", "array-contains", currentUser.uid)
+    .limit(1)
+    .get();
+
+  if (couplesSnapshot.empty) {
+    throw new Error(
+      "Couple not found. Please connect with your partner first.",
+    );
+  }
+
+  const coupleDoc = couplesSnapshot.docs[0];
+
+  await adminDb
+    .collection("couples")
+    .doc(coupleDoc.id)
+    .update({
+      [`userDetails.${currentUser.uid}.rewards`]: rewards,
+    });
+
+  return { success: true };
 }
