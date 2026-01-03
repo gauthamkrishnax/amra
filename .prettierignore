@@ -1,0 +1,11 @@
+# Ignore artifacts:
+build
+coverage
+.next
+.husky
+.vscode
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
