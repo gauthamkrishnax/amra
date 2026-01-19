@@ -18,14 +18,14 @@ export default function ConnectPage({ searchParams }) {
     const interval = setInterval(async () => {
       const hasCouple = await checkCouple();
       if (hasCouple) {
-        router.push("/");
+        router.push("/setGoals");
       }
     }, 3000);
 
     // Check immediately on mount
     checkCouple().then((hasCouple) => {
       if (hasCouple) {
-        router.push("/");
+        router.push("/setGoals");
       }
     });
 

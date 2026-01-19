@@ -75,5 +75,5 @@ export async function createCouple(connectionString) {
   });
   await batch.commit();
 
-  redirect("/");
+  redirect("/setGoals");
 }
