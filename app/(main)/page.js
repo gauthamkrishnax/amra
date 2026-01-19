@@ -1,5 +1,5 @@
-import Box from "./_components/ui/box";
-import Logo from "./_components/ui/Logo";
+import Box from "@/app/_components/ui/box";
+import Logo from "@/app/_components/ui/Logo";
 
 export default async function Home() {
   async function handleClick() {
