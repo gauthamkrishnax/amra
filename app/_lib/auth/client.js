@@ -1,6 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/app/_lib/firebase/client.js";
-import { redirect } from "next/navigation";
+import { getPostSignInRedirect } from "@/app/_lib/firestore/user";
 
 export async function signInWithGoogle() {
   // 1. Open Google popup
@@ -21,5 +21,7 @@ export async function signInWithGoogle() {
     throw new Error("Failed to create session");
   }
 
-  redirect("/");
+  // 4. Check user status and redirect accordingly
+  const redirectPath = await getPostSignInRedirect();
+  window.location.href = redirectPath;
 }

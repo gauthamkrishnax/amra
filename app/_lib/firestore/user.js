@@ -2,8 +2,31 @@
 
 import { adminDb } from "@/app/_lib/firebase/admin";
 import { RandomConnectionString } from "@/app/_lib/utils/string";
-import { requireAuth } from "@/app/_lib/auth/server";
+import { requireAuth, getCurrentUser } from "@/app/_lib/auth/server";
 import { redirect } from "next/navigation";
+
+export async function getPostSignInRedirect() {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return "/signin";
+  }
+
+  const userDoc = await adminDb.collection("users").doc(currentUser.uid).get();
+  const userData = userDoc.data();
+
+  // No nickname → go to nickname page
+  if (!userData?.nickname) {
+    return "/nickname";
+  }
+
+  // No coupleId → go to connect page
+  if (!userData?.coupleId) {
+    return "/connect";
+  }
+
+  // All set → go to home
+  return "/";
+}
 
 export async function getUserConnectionCode() {
   const currentUser = await requireAuth();
