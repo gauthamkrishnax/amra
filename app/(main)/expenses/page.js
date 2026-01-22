@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getExpensesData, deleteExpense } from "@/app/_lib/firestore/expense";
+import { getCoupleDetails } from "@/app/_lib/firestore/couple";
+import { deleteExpense } from "@/app/_lib/firestore/expense";
 import Link from "next/link";
 
 const CATEGORY_INFO = {
@@ -24,7 +25,7 @@ export default function ExpensesPage() {
 
   async function fetchData() {
     try {
-      const result = await getExpensesData();
+      const result = await getCoupleDetails();
       setData(result);
     } catch (err) {
       setError("Failed to load expenses");
@@ -72,48 +73,25 @@ export default function ExpensesPage() {
     );
   }
 
-  // Calculate monthly spend (current month)
   const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
 
-  const monthlyExpenses = data.expenses.filter((e) => {
-    const expenseDate = new Date(e.createdAt);
-    return (
-      expenseDate.getMonth() === currentMonth &&
-      expenseDate.getFullYear() === currentYear
-    );
-  });
-
-  const monthlyTotal = monthlyExpenses.reduce((sum, e) => sum + e.amount, 0);
-
-  // Calculate who owes who
-  const currentUserPaid = monthlyExpenses
-    .filter((e) => e.paidBy === data.currentUser.id)
-    .reduce((sum, e) => sum + e.amount, 0);
-
-  const partnerPaid = monthlyExpenses
-    .filter((e) => e.paidBy === data.partner.id)
-    .reduce((sum, e) => sum + e.amount, 0);
-
-  const fairShare = monthlyTotal / 2;
-  const currentUserOwes = fairShare - currentUserPaid;
-  const partnerOwes = fairShare - partnerPaid;
+  // Use monthlyTotal from getCoupleDetails
+  const { monthlyTotal, currentUserOwes, partnerOwes } = data;
 
   // Determine who owes who
   let oweText = "";
   let oweAmount = 0;
   if (currentUserOwes > 0) {
-    oweText = `${data.currentUser.nickname} owes ${data.partner.nickname}`;
+    oweText = `${data.userNickname} owes ${data.partnerNickname}`;
     oweAmount = currentUserOwes;
   } else if (partnerOwes > 0) {
-    oweText = `${data.partner.nickname} owes ${data.currentUser.nickname}`;
+    oweText = `${data.partnerNickname} owes ${data.userNickname}`;
     oweAmount = partnerOwes;
   }
 
   const getNickname = (userId) => {
-    if (userId === data.currentUser.id) return data.currentUser.nickname;
-    if (userId === data.partner.id) return data.partner.nickname;
+    if (userId === data.userId) return data.userNickname;
+    if (userId === data.partnerId) return data.partnerNickname;
     return "Unknown";
   };
 
