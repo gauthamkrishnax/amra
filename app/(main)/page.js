@@ -28,9 +28,9 @@ export default async function Home() {
         ></Box>
         <Box
           title="Monthly Spend"
-          content={`$${coupleDetails.monthlyTotal}`}
+          content={`₹ ${coupleDetails.monthlyTotal}`}
           contentSize="4xl"
-          className="bg-mygreen pr-15 absolute right-0 top-5 -rotate-5"
+          className="bg-mygreen pr-5 absolute right-0 top-10 -rotate-5"
         ></Box>
       </div>
       <Divider />
