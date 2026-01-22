@@ -9,7 +9,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const user = await getCurrentUser();
   return (
     <html lang="en">
       <body className={`${ramona.variable} antialiased`}>{children}</body>
