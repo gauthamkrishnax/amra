@@ -1,0 +1,8 @@
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$branch" = "master" ] || [ "$branch" = "main" ]; then
+  echo "❌ Direct commits to $branch are not allowed. Please create a feature branch."
+  exit 1
+fi
+
+pnpm lint-staged
