@@ -39,6 +39,7 @@ export default function LinkButton({
   href,
   color = "pink",
   shape = "default",
+  noLink = false,
 }) {
   const fillColor = COLOR_MAP[color] || COLOR_MAP.pink;
   const shapeObj = SHAPE_MAP[shape] || SHAPE_MAP.default;
@@ -55,7 +56,7 @@ export default function LinkButton({
       >
         <path d={shapeObj.path} fill={svgFill} />
       </svg>
-      <Link href={href}>{children}</Link>
+      {noLink ? <span>{children}</span> : <Link href={href}>{children}</Link>}
     </div>
   );
 }
