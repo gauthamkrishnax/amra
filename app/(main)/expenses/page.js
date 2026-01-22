@@ -5,6 +5,7 @@ import { getCoupleDetails } from "@/app/_lib/firestore/couple";
 import { deleteExpense } from "@/app/_lib/firestore/expense";
 import Divider from "@/app/_components/ui/Divider";
 import LinkButton from "@/app/_components/ui/LinkButton";
+import Modal from "@/app/_components/ui/Modal";
 import Link from "next/link";
 
 const CATEGORY_INFO = {
@@ -19,6 +20,7 @@ export default function ExpensesPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -36,22 +38,28 @@ export default function ExpensesPage() {
     }
   }
 
-  async function handleDelete(expenseId) {
-    if (!confirm("Are you sure you want to delete this expense?")) return;
+  function openDeleteModal(expenseId) {
+    setDeleteTarget(expenseId);
+  }
 
-    setDeleting(expenseId);
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(deleteTarget);
     setError(null);
 
     try {
-      await deleteExpense(expenseId);
+      await deleteExpense(deleteTarget);
       setData((prev) => ({
         ...prev,
-        expenses: prev.expenses.filter((e) => e.id !== expenseId),
+        expenses: prev.expenses.filter((e) => e.id !== deleteTarget),
       }));
     } catch (err) {
       setError(err.message || "Failed to delete expense");
     } finally {
       setDeleting(null);
+      setDeleteTarget(null);
+      fetchData();
     }
   }
 
@@ -188,7 +196,7 @@ export default function ExpensesPage() {
                           ₹ {expense.amount.toFixed(2)}
                         </span>
                         <button
-                          onClick={() => handleDelete(expense.id)}
+                          onClick={() => openDeleteModal(expense.id)}
                           disabled={deleting === expense.id}
                           className="w-8 h-8 rounded-full bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center transition-colors disabled:opacity-50"
                         >
@@ -217,6 +225,17 @@ export default function ExpensesPage() {
           </div>
         )}
       </div>
+
+      <Modal
+        isOpen={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="Delete Expense"
+        confirmText="Delete"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to delete this expense?</p>
+      </Modal>
     </div>
   );
 }
