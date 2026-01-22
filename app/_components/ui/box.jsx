@@ -1,10 +1,13 @@
-export default async function Box({ title, content, className }) {
+export default async function Box({ title, content, contentSize, className }) {
+  const contentSizeClass = contentSize ? `text-${contentSize}` : "text-2xl";
   return (
-    <div
-      className={`bg-mypurple p-5 bg-secondary rotate-5 max-w-fit m-8 ${className}`}
-    >
+    <div className={`${className} p-5 max-w-fit m-8`}>
       <p>{title}</p>
-      <p className="text-2xl font-bold">{content}</p>
+      <p
+        className={`${contentSizeClass ? contentSizeClass : "text-2xl"} font-bold`}
+      >
+        {content}
+      </p>
     </div>
   );
 }

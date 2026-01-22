@@ -1,4 +1,5 @@
-import BoringButton from "./BoringButton";
+import Link from "next/link";
+
 const COLOR_MAP = {
   pink: "var(--color-mypink)",
   green: "var(--color-mygreen)",
@@ -29,13 +30,13 @@ const SHAPE_MAP = {
   },
   shape4: {
     path: "M200 43L200 0L0 10L0 33Z",
-    svgPosition: "translate-y-0",
+    svgPosition: "translate-y-0 scale-x-130 translate-x-3",
   },
 };
 
-export default function Button({
+export default function LinkButton({
   children,
-  action,
+  href,
   color = "pink",
   shape = "default",
 }) {
@@ -44,7 +45,7 @@ export default function Button({
   const viewBox = shapeObj.viewBox || "0 0 162 29";
   const svgFill = shapeObj.fill || fillColor;
   return (
-    <div className="relative inline-block max-w-55 min-w-min">
+    <div className="relative max-w-48 w-fit">
       <svg
         className={`absolute inset-0 ${shapeObj.svgPosition || ""} -z-10 w-full h-full`}
         viewBox={viewBox}
@@ -54,12 +55,7 @@ export default function Button({
       >
         <path d={shapeObj.path} fill={svgFill} />
       </svg>
-      <BoringButton
-        action={action}
-        className="relative text-primary font-bold text-2xl px-3 py-1 break-word whitespace-normal"
-      >
-        {children}
-      </BoringButton>
+      <Link href={href}>{children}</Link>
     </div>
   );
 }
