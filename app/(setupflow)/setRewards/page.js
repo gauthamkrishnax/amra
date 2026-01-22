@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   saveRewards,
@@ -9,7 +9,7 @@ import {
 import SubmitButton from "@/app/_components/SubmitButton";
 import Link from "next/link";
 
-export default function SetRewardsPage() {
+function SetRewardsContent() {
   const searchParams = useSearchParams();
   const fromSettings = searchParams.get("from") === "settings";
 
@@ -154,5 +154,19 @@ export default function SetRewardsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SetRewardsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-950 to-slate-900 flex items-center justify-center">
+          <div className="animate-pulse text-violet-400">Loading...</div>
+        </div>
+      }
+    >
+      <SetRewardsContent />
+    </Suspense>
   );
 }
