@@ -46,9 +46,9 @@ export default function LinkButton({
   const viewBox = shapeObj.viewBox || "0 0 162 29";
   const svgFill = shapeObj.fill || fillColor;
   return (
-    <div className="relative max-w-48 w-fit">
+    <div className="relative max-w-48 w-fit group">
       <svg
-        className={`absolute inset-0 ${shapeObj.svgPosition || ""} -z-10 w-full h-full`}
+        className={`absolute inset-0 ${shapeObj.svgPosition || ""} -z-10 w-full h-full transition-transform duration-200 group-active:rotate-5`}
         viewBox={viewBox}
         preserveAspectRatio="none"
         fill="none"
