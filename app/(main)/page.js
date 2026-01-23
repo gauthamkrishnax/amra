@@ -2,6 +2,7 @@ import Box from "@/app/_components/ui/box";
 import Divider from "@/app/_components/ui/Divider";
 import LinkButton from "@/app/_components/ui/LinkButton";
 import { getCoupleDetails } from "@/app/_lib/firestore/couple";
+import PWAPrompts from "@/app/_components/PWAPrompts";
 
 export const metadata = {
   title: "Amra - Love app",
@@ -14,6 +15,7 @@ export default async function Home() {
 
   return (
     <div className="pb-10">
+      <PWAPrompts />
       <h1 className="text-2xl px-10 pb-5 font-bold text-primary">
         Hey {coupleDetails.userNickname}!
       </h1>
