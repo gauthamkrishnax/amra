@@ -12,8 +12,6 @@ export const metadata = {
 export default async function Home() {
   const coupleDetails = await getCoupleDetails();
 
-  console.log(coupleDetails);
-
   return (
     <div className="pb-10">
       <h1 className="text-2xl px-10 pb-5 font-bold text-primary">
