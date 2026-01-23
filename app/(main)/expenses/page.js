@@ -107,7 +107,7 @@ export default function ExpensesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="my-2 mx-10">
         <LinkButton href="/" color="blue" shape="shape4">

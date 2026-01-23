@@ -5,6 +5,11 @@ import {
   getRewardsPageData,
   redeemReward,
 } from "@/app/_lib/firestore/goalsAndRewards";
+import LinkButton from "@/app/_components/ui/LinkButton";
+import Divider from "@/app/_components/ui/Divider";
+import RewardsIllustration from "@/app/_illustrations/rewards";
+import Button from "@/app/_components/ui/Button";
+import Modal from "@/app/_components/ui/Modal";
 
 const REWARD_COSTS = {
   reward1: 20,
@@ -18,6 +23,7 @@ export default function RewardsPage() {
   const [redeeming, setRedeeming] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [confirmReward, setConfirmReward] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,7 +39,19 @@ export default function RewardsPage() {
     fetchData();
   }, []);
 
-  async function handleRedeem(rewardKey, rewardName) {
+  function openConfirmModal(reward) {
+    setConfirmReward(reward);
+  }
+
+  function closeConfirmModal() {
+    setConfirmReward(null);
+  }
+
+  async function handleRedeem() {
+    if (!confirmReward) return;
+
+    const { key: rewardKey, label: rewardName } = confirmReward;
+    setConfirmReward(null);
     setError(null);
     setSuccess(null);
     setRedeeming(rewardKey);
@@ -56,7 +74,7 @@ export default function RewardsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-950 to-slate-900 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse text-violet-400">Loading...</div>
       </div>
     );
@@ -64,7 +82,7 @@ export default function RewardsPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-950 to-slate-900 flex items-center justify-center p-6">
+      <div className="min-h-screen  flex items-center justify-center p-6">
         <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/10 text-center">
           <p className="text-slate-400">
             Unable to load rewards. Please try again later.
@@ -95,105 +113,125 @@ export default function RewardsPage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-950 to-slate-900 flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/10">
-          {/* Points Display */}
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
-              <span className="text-3xl">⭐</span>
-            </div>
-            <h1 className="text-3xl font-bold bg-linear-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">
-              Your Points
-            </h1>
-            <div className="mt-4">
-              <span className="text-6xl font-bold text-white">
-                {data.currentUserPoints}
-              </span>
-              <p className="text-slate-400 text-sm mt-2">points available</p>
-            </div>
-          </div>
+    <div className="min-h-screen">
+      <div className="my-2 mx-10">
+        <LinkButton href="/" color="yellow" shape="shape2">
+          <h1 className="text-2xl font-bold ">Rewards</h1>
+        </LinkButton>
+      </div>
 
-          {/* Rewards Section */}
-          <div className="border-t border-white/10 pt-6">
-            <h2 className="text-lg font-semibold text-slate-300 mb-4 flex items-center gap-2">
-              <span>🎁</span>
-              Rewards from {data.partnerNickname}
-            </h2>
+      <div className="flex justify-between mb-2 text-primary">
+        <div className="ml-10 mt-10 pr-10 h-fit p-5 max-w-fit bg-mypink rotate-5">
+          <p>you have:</p>
+          <p className="text-2xl font-bold">{data.currentUserPoints} Points</p>
+        </div>
+        <RewardsIllustration />
+      </div>
 
-            {rewards.length === 0 ? (
-              <p className="text-slate-500 text-sm text-center py-4">
-                {data.partnerNickname} hasn&apos;t set any rewards yet.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {rewards.map((reward) => {
-                  const canAfford = data.currentUserPoints >= reward.cost;
-                  const isRedeeming = redeeming === reward.key;
+      <Divider />
 
-                  return (
-                    <div
-                      key={reward.key}
-                      className={`p-4 rounded-xl border transition-all ${
-                        canAfford
-                          ? "bg-white/5 border-white/10 hover:bg-white/10"
-                          : "bg-white/2 border-white/5 opacity-60"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1">
-                          <p className="text-white text-sm font-medium">
-                            {reward.label}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <span className="text-amber-400 font-bold text-sm">
-                              {reward.cost} pts
-                            </span>
-                            {!canAfford && (
-                              <span className="text-xs text-slate-500">
-                                (need {reward.cost - data.currentUserPoints}{" "}
-                                more)
-                              </span>
-                            )}
+      {/* Rewards Section */}
+      <div className="py-6">
+        {rewards.length === 0 ? (
+          <p className="text-primary text-sm text-center py-4">
+            {data.partnerNickname} hasn&apos;t set any rewards yet.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {rewards.map((reward) => {
+              const canAfford = data.currentUserPoints >= reward.cost;
+              const isRedeeming = redeeming === reward.key;
+
+              return (
+                <div
+                  key={reward.key}
+                  className={`p-4 rounded-xl border transition-all ${
+                    canAfford
+                      ? "bg-white/5 border-white/10 hover:bg-white/10"
+                      : "bg-white/2 border-white/5 opacity-70"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="text-xl font-bold text-primary">
+                        {reward.label}
+                      </p>
+                      <div className="gap-2 mt-2">
+                        Redeem for -
+                        <span className="text-amber-400 font-bold text-sm">
+                          {reward.cost} pts
+                        </span>
+                        {!canAfford && (
+                          <div className="text-xs text-slate-500">
+                            (need {reward.cost - data.currentUserPoints} more)
                           </div>
-                        </div>
-                        <button
-                          onClick={() => handleRedeem(reward.key, reward.label)}
-                          disabled={!canAfford || isRedeeming}
-                          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                            canAfford
-                              ? "bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-orange-500/25"
-                              : "bg-slate-700/50 text-slate-500 cursor-not-allowed"
-                          } disabled:opacity-50`}
-                        >
-                          {isRedeeming ? "..." : "Redeem"}
-                        </button>
+                        )}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                    <Button
+                      action={() => openConfirmModal(reward)}
+                      disabled={!canAfford || isRedeeming}
+                      color={
+                        canAfford
+                          ? ["yellow", "purple", "green", "blue", "pink"][
+                              Math.floor(Math.random() * 5)
+                            ]
+                          : "gray"
+                      }
+                      shape="shape2"
+                      noForm={true}
+                      className="text-sm font-bold"
+                    >
+                      {isRedeeming ? "..." : "Redeem"}
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-
-          {/* Messages */}
-          {error && (
-            <div className="mt-5 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-              <p className="text-red-400 text-sm text-center">{error}</p>
-            </div>
-          )}
-
-          {success && (
-            <div className="mt-5 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-              <p className="text-emerald-400 text-sm text-center">{success}</p>
-            </div>
-          )}
-        </div>
-
-        <p className="text-center text-slate-500 text-xs mt-6">
-          Earn points by completing goals • Spend on rewards
-        </p>
+        )}
       </div>
+
+      <Divider />
+      {/* Messages */}
+      {error && (
+        <div className="mt-5 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+          <p className="text-red-400 text-sm text-center">{error}</p>
+        </div>
+      )}
+
+      {success && (
+        <div className="mt-5 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+          <p className="text-emerald-400 text-sm text-center">{success}</p>
+        </div>
+      )}
+
+      <Modal
+        isOpen={!!confirmReward}
+        onClose={closeConfirmModal}
+        onConfirm={handleRedeem}
+        title="Confirm Redemption"
+        confirmText="Yes, Redeem"
+        cancelText="Cancel"
+      >
+        {confirmReward && (
+          <div className="text-center">
+            <p className="text-gray-700 mb-2">
+              Are you sure you want to redeem
+            </p>
+            <p className="font-bold text-lg text-gray-900 mb-2">
+              &quot;{confirmReward.label}&quot;
+            </p>
+            <p className="text-gray-600">
+              for{" "}
+              <span className="font-bold text-amber-600">
+                {confirmReward.cost} points
+              </span>
+              ?
+            </p>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
