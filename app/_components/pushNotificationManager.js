@@ -17,10 +17,26 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 function getIsSupported() {
+  if (typeof window === "undefined") return false;
+
+  // Check for basic support
+  const hasServiceWorker = "serviceWorker" in navigator;
+  const hasPushManager = "PushManager" in window;
+  const hasNotifications = "Notification" in window;
+
+  return hasServiceWorker && hasPushManager && hasNotifications;
+}
+
+function getIsIOS() {
+  if (typeof window === "undefined") return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function getIsStandalone() {
   return (
     typeof window !== "undefined" &&
-    "serviceWorker" in navigator &&
-    "PushManager" in window
+    (window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true)
   );
 }
 
@@ -30,21 +46,42 @@ export default function PushNotificationManager({ isOpen, onClose }) {
     getIsSupported,
     () => false,
   );
+  const isIOS = useSyncExternalStore(
+    () => () => {},
+    getIsIOS,
+    () => false,
+  );
+  const isStandalone = useSyncExternalStore(
+    () => () => {},
+    getIsStandalone,
+    () => false,
+  );
+
   const [subscription, setSubscription] = useState(null);
   const [message, setMessage] = useState("");
+  const [permissionState, setPermissionState] = useState("default");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    async function registerServiceWorker() {
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
-      const sub = await registration.pushManager.getSubscription();
-      setSubscription(sub);
+    async function checkSubscription() {
+      try {
+        if ("serviceWorker" in navigator) {
+          const registration = await navigator.serviceWorker.ready;
+          const sub = await registration.pushManager.getSubscription();
+          setSubscription(sub);
+
+          // Check notification permission
+          if ("Notification" in window) {
+            setPermissionState(Notification.permission);
+          }
+        }
+      } catch (err) {
+        console.error("Error checking subscription:", err);
+      }
     }
 
     if (isSupported) {
-      registerServiceWorker();
+      checkSubscription();
     }
   }, [isSupported]);
 
@@ -65,27 +102,74 @@ export default function PushNotificationManager({ isOpen, onClose }) {
   }, [isOpen, onClose]);
 
   async function subscribeToPush() {
-    const registration = await navigator.serviceWorker.ready;
-    const sub = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(
-        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-      ),
-    });
-    setSubscription(sub);
-    await subscribeUser(sub.toJSON());
+    setError("");
+
+    try {
+      // First, explicitly request notification permission
+      if (!("Notification" in window)) {
+        throw new Error("This browser does not support notifications");
+      }
+
+      // Request permission
+      const permission = await Notification.requestPermission();
+      setPermissionState(permission);
+
+      if (permission !== "granted") {
+        setError(
+          "Notification permission denied. Please enable notifications in your browser settings.",
+        );
+        return;
+      }
+
+      // Wait for service worker to be ready
+      const registration = await navigator.serviceWorker.ready;
+
+      // Check if we already have a subscription
+      let sub = await registration.pushManager.getSubscription();
+
+      if (!sub) {
+        // Subscribe to push notifications
+        sub = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+          ),
+        });
+      }
+
+      setSubscription(sub);
+      await subscribeUser(sub.toJSON());
+    } catch (err) {
+      console.error("Error subscribing to push notifications:", err);
+      setError(
+        err.message ||
+          "Failed to subscribe to notifications. Please try again.",
+      );
+    }
   }
 
   async function unsubscribeFromPush() {
-    await subscription?.unsubscribe();
-    setSubscription(null);
-    await unsubscribeUser();
+    try {
+      setError("");
+      await subscription?.unsubscribe();
+      setSubscription(null);
+      await unsubscribeUser();
+    } catch (err) {
+      console.error("Error unsubscribing:", err);
+      setError("Failed to unsubscribe. Please try again.");
+    }
   }
 
   async function sendTestNotification() {
     if (subscription) {
-      await sendNotification(message, subscription.toJSON());
-      setMessage("");
+      try {
+        setError("");
+        await sendNotification(message, subscription.toJSON());
+        setMessage("");
+      } catch (err) {
+        console.error("Error sending test notification:", err);
+        setError("Failed to send test notification.");
+      }
     }
   }
 
@@ -124,7 +208,9 @@ export default function PushNotificationManager({ isOpen, onClose }) {
           {!isSupported ? (
             <div className="bg-myyellow/30 rounded-lg p-4">
               <p className="text-primary">
-                Push notifications are not supported in this browser.
+                {isIOS && !isStandalone
+                  ? "Push notifications on iOS are only available when the app is installed. Please install the app first."
+                  : "Push notifications are not supported in this browser."}
               </p>
             </div>
           ) : subscription ? (
@@ -134,6 +220,11 @@ export default function PushNotificationManager({ isOpen, onClose }) {
                   You are subscribed to push notifications.
                 </p>
               </div>
+              {error && (
+                <div className="bg-red-100 rounded-lg p-3">
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
               <div>
                 <Button
                   action={unsubscribeFromPush}
@@ -161,6 +252,7 @@ export default function PushNotificationManager({ isOpen, onClose }) {
                     noForm
                     color="green"
                     shape="shape4"
+                    disabled={!message.trim()}
                   >
                     Send Test
                   </Button>
@@ -173,13 +265,36 @@ export default function PushNotificationManager({ isOpen, onClose }) {
                 <p className="text-primary">
                   Enable notifications to stay updated.
                 </p>
+                {isIOS && isStandalone && (
+                  <p className="text-primary text-sm mt-2">
+                    Note: On iOS, make sure notifications are enabled in
+                    Settings → Amra → Notifications.
+                  </p>
+                )}
               </div>
+              {error && (
+                <div className="bg-red-100 rounded-lg p-3">
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
+              {permissionState === "denied" && (
+                <div className="bg-myyellow/30 rounded-lg p-3">
+                  <p className="text-primary text-sm">
+                    Notifications are blocked. Please enable them in your
+                    browser settings:
+                    {isIOS
+                      ? " Settings → Safari → Amra → Notifications"
+                      : " Site Settings → Notifications"}
+                  </p>
+                </div>
+              )}
               <div>
                 <Button
                   action={subscribeToPush}
                   noForm
                   color="green"
                   shape="shape3"
+                  disabled={permissionState === "denied"}
                 >
                   Enable Notifications
                 </Button>

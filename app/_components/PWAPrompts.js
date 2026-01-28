@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore, useCallback } from "react";
+import { useState, useSyncExternalStore, useCallback, useEffect } from "react";
 import PushNotificationManager from "./pushNotificationManager";
 import InstallPrompt from "./InstallPrompt";
 
@@ -35,6 +35,23 @@ function getShouldShowPrompts() {
 }
 
 export default function PWAPrompts() {
+  // Register service worker on mount
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      "serviceWorker" in navigator &&
+      window.workbox === undefined
+    ) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((registration) => {
+          console.log("Service Worker registered successfully:", registration);
+        })
+        .catch((error) => {
+          console.error("Service Worker registration failed:", error);
+        });
+    }
+  }, []);
   const isStandalone = useSyncExternalStore(
     subscribeToStandalone,
     getIsStandalone,
