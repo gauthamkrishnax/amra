@@ -39,15 +39,18 @@ export default function Button({
   noForm = false,
   color = "pink",
   shape = "default",
+  disabled = false,
 }) {
   const fillColor = COLOR_MAP[color] || COLOR_MAP.pink;
   const shapeObj = SHAPE_MAP[shape] || SHAPE_MAP.default;
   const viewBox = shapeObj.viewBox || "0 0 162 29";
   const svgFill = shapeObj.fill || fillColor;
   return (
-    <div className="relative inline-block max-w-55 min-w-min group">
+    <div
+      className={`relative inline-block max-w-55 min-w-min group ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+    >
       <svg
-        className={`absolute inset-0 ${shapeObj.svgPosition || ""} z-0 w-full h-full transition-transform duration-200 group-active:rotate-5`}
+        className={`absolute inset-0 ${shapeObj.svgPosition || ""} z-0 w-full h-full transition-transform duration-200 ${disabled ? "" : "group-active:rotate-5"}`}
         viewBox={viewBox}
         preserveAspectRatio="none"
         fill="none"
@@ -58,14 +61,16 @@ export default function Button({
       {noForm ? (
         <button
           onClick={action}
-          className="relative text-primary font-bold text-2xl px-3 py-1 break-word whitespace-normal"
+          disabled={disabled}
+          className="relative text-primary font-bold text-2xl px-3 py-1 break-word whitespace-normal disabled:cursor-not-allowed"
         >
           {children}
         </button>
       ) : (
         <BoringButton
           action={action}
-          className="relative text-primary font-bold text-2xl px-3 py-1 break-word whitespace-normal"
+          disabled={disabled}
+          className="relative text-primary font-bold text-2xl px-3 py-1 break-word whitespace-normal disabled:cursor-not-allowed"
         >
           {children}
         </BoringButton>
