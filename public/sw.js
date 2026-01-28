@@ -62,25 +62,79 @@ self.addEventListener("fetch", function (event) {
 
 // Push notification event
 self.addEventListener("push", function (event) {
+  console.log("Push notification received:", event);
+
+  let notificationData = {
+    title: "Amra",
+    body: "You have a new notification",
+    icon: "/web-app-manifest-192x192.png",
+  };
+
+  // Try to parse the data if it exists
   if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: data.icon || "/icon.png",
-      badge: "/web-app-manifest-192x192.png",
-      vibrate: [100, 50, 100],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: "2",
-      },
-    };
-    event.waitUntil(self.registration.showNotification(data.title, options));
+    try {
+      const data = event.data.json();
+      notificationData = {
+        title: data.title || notificationData.title,
+        body: data.body || notificationData.body,
+        icon: data.icon || notificationData.icon,
+      };
+    } catch (error) {
+      console.error("Error parsing notification data:", error);
+      // Use text if JSON parsing fails
+      notificationData.body = event.data.text();
+    }
   }
+
+  const options = {
+    body: notificationData.body,
+    icon: notificationData.icon,
+    badge: "/web-app-manifest-192x192.png",
+    vibrate: [200, 100, 200],
+    tag: "amra-notification",
+    requireInteraction: false,
+    data: {
+      dateOfArrival: Date.now(),
+      url: "/",
+    },
+    actions: [
+      {
+        action: "open",
+        title: "Open App",
+      },
+    ],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(notificationData.title, options),
+  );
 });
 
 // Notification click event
 self.addEventListener("notificationclick", function (event) {
-  console.log("Notification click received.");
+  console.log("Notification click received:", event);
   event.notification.close();
-  event.waitUntil(clients.openWindow("https://amralove.netlify.app/"));
+
+  const urlToOpen = event.notification.data?.url || "/";
+
+  event.waitUntil(
+    clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      })
+      .then(function (clientList) {
+        // Check if there's already a window open
+        for (let i = 0; i < clientList.length; i++) {
+          const client = clientList[i];
+          if (client.url === self.registration.scope && "focus" in client) {
+            return client.focus();
+          }
+        }
+        // If no window is open, open a new one
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      }),
+  );
 });
